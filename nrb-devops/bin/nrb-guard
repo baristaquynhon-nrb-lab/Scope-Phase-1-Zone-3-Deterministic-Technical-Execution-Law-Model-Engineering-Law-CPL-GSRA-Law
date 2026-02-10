@@ -1,0 +1,40 @@
+#!/data/data/com.termux/files/usr/bin/env bash
+set -euo pipefail
+
+echo "[NRB] Guard Engine starting..."
+
+echo "[NRB] Behavior Gate running..."
+if command -v nrb-preflight >/dev/null 2>&1; then
+  nrb-preflight || { echo "[NRB][HALT] Behavior Gate failed"; exit 1; }
+  echo "[NRB][OK] Behavior Gate PASS"
+else
+  echo "[NRB][WARN] nrb-preflight not found; skipping Behavior Gate"
+fi
+
+echo "[NRB] Auto-Audit Layer (M22) running..."
+if command -v nrb-audit >/dev/null 2>&1; then
+  nrb-audit || { echo "[NRB][HALT] Auto-Audit failed"; exit 1; }
+  echo "[NRB][OK] Auto-Audit PASS"
+else
+  echo "[NRB][HALT] nrb-audit missing (M22 required)"
+  exit 1
+fi
+
+echo "[NRB] Verifying seal signature..."
+if command -v nrb-sign-verify >/dev/null 2>&1; then
+  nrb-sign-verify || { echo "[NRB][HALT] Seal signature invalid"; exit 1; }
+  echo "[NRB][OK] signature VALID"
+  echo "[NRB][OK] Seal verified"
+else
+  echo "[NRB][WARN] nrb-sign-verify not found; skipping seal signature verify"
+fi
+
+echo "[NRB] Chain verification..."
+if command -v nrb-chain-verify >/dev/null 2>&1; then
+  nrb-chain-verify || { echo "[NRB][HALT] Chain integrity failed"; exit 1; }
+  echo "[NRB][OK] Chain verified"
+else
+  echo "[NRB][WARN] nrb-chain-verify not found; skipping chain verify"
+fi
+
+echo "[NRB] Guard PASS"

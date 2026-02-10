@@ -1,0 +1,17 @@
+#!/data/data/com.termux/files/usr/bin/env node
+"use strict";
+
+const path = require("path");
+const cp = require("child_process");
+
+function sh(cmd) {
+  return cp.execSync(cmd, { stdio: ["ignore", "pipe", "pipe"], encoding: "utf8" }).trim();
+}
+
+function main() {
+  const root = sh("git rev-parse --show-toplevel");
+  const engine = path.join(root, "nrb-devops", "audit", "engine.js");
+  require(engine);
+}
+
+if (require.main === module) main();

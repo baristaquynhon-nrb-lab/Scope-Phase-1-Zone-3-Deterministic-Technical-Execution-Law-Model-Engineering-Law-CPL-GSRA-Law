@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[NRB] Guard Engine starting..."
+
+# --- Behavior Gate ---
+if [ -x "nrb-devops/bin/nrb-behavior-gate" ]; then
+  echo "[NRB] Behavior Gate running..."
+  nrb-devops/bin/nrb-behavior-gate || {
+    echo "[NRB][HALT] Behavior Gate failed"
+    exit 40
+  }
+  echo "[NRB][OK] Behavior Gate PASS"
+fi
+
+# --- Seal verification ---
+if command -v nrb-sign-verify >/dev/null 2>&1; then
+  echo "[NRB] Verifying seal signature..."
+  nrb-sign-verify NRB_SEAL_MANIFEST.sha256.sig NRB_SEAL_MANIFEST.sha256 || {
+    echo "[NRB][HALT] Seal signature invalid"
+    exit 41
+  }
+  echo "[NRB][OK] Seal verified"
+fi
+
+# --- Chain integrity ---
+if command -v nrb-chain >/dev/null 2>&1; then
+  echo "[NRB] Chain verification..."
+  nrb-chain --verify || {
+    echo "[NRB][HALT] Chain integrity failed"
+    exit 42
+  }
+  echo "[NRB][OK] Chain verified"
+fi
+
+echo "[NRB][OK] Guard PASS"
+exit 0

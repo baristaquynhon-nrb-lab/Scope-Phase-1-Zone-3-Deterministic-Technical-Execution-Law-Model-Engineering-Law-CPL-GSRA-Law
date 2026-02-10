@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+VERSION="1.0"
+
+say(){ printf "%s\n" "$*"; }
+ok(){ say "[NRB][OK] $*"; }
+fail(){ say "[NRB][HALT][BEHAVIOR_GATE] $*"; exit "${2:-1}"; }
+
+have_cmd(){ command -v "$1" >/dev/null 2>&1; }
+
+if ! have_cmd git; then fail "git missing" 40; fi
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then fail "Not in git repo" 40; fi
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+POLICY="nrb-devops/policy/behavior_contract_v1.json"
+[ -f "$POLICY" ] || fail "Policy missing" 41
+
+MAX_LINES=$(grep max_changed_lines "$POLICY" | grep -o '[0-9]\+')
+MAX_FILES=$(grep max_changed_files "$POLICY" | grep -o '[0-9]\+')
+
+STAGED=$(git diff --cached --name-only || true)
+[ -z "$STAGED" ] && ok "No staged changes" && exit 0
+
+FILES=$(echo "$STAGED" | wc -l)
+[ "$FILES" -le "$MAX_FILES" ] || fail "Too many files changed" 43
+
+LINES=$(git diff --cached --numstat | awk '{a+=$1; d+=$2} END {print a+d}')
+[ "$LINES" -le "$MAX_LINES" ] || fail "Too many lines changed" 43
+
+DIFF=$(git diff --cached -U0 || true)
+echo "$DIFF" | grep -E '^\+.*(TODO|FIXME|HACK|XXX)' && fail "Placeholder detected" 44
+
+echo "$STAGED" | grep -E '^src/' >/dev/null && \
+echo "$STAGED" | grep -E '^tests/' >/dev/null || \
+fail "Source changed without tests" 45
+
+ok "Behavior Gate PASS"
+exit 0

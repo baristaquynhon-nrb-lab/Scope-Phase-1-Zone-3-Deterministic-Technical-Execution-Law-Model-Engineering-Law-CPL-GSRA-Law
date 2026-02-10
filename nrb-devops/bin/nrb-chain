@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+CHAIN_FILE=".nrb/chain.log"
+mkdir -p .nrb
+
+# ==============================
+# VERIFY MODE
+# ==============================
+if [[ "$1" == "--verify" ]]; then
+  echo "[NRB] Chain verification..."
+
+  if [[ ! -f "$CHAIN_FILE" ]]; then
+    echo "[NRB][FAIL] chain.log missing"
+    exit 1
+  fi
+
+  while read -r LINE; do
+    HASH=$(echo "$LINE" | awk '{print $1}')
+    DATA=$(echo "$LINE" | cut -d' ' -f2-)
+
+    CALC=$(echo -n "$DATA" | sha256sum | awk '{print $1}')
+
+    if [[ "$HASH" != "$CALC" ]]; then
+      echo "[NRB][FAIL] Hash mismatch"
+      exit 1
+    fi
+  done < "$CHAIN_FILE"
+
+  echo "[NRB][OK] Chain verified"
+  exit 0
+fi
+
+# ==============================
+# WRITE MODE (default)
+# ==============================
+DATA="$*"
+HASH=$(echo -n "$DATA" | sha256sum | awk '{print $1}')
+
+echo "$HASH $DATA" >> "$CHAIN_FILE"
+
+echo "[NRB][OK] chain entry created"
+echo "[NRB][OK] hash: $HASH"
