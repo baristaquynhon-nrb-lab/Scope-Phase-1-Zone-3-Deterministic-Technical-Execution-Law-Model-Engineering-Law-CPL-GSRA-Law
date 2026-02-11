@@ -1,0 +1,104 @@
+diff --git a/nrb-devops/audit/repro_engine.js b/nrb-devops/audit/repro_engine.js
+new file mode 100644
+--- /dev/null
++++ b/nrb-devops/audit/repro_engine.js
+@@
++"use strict";
++const fs = require("fs");
++const crypto = require("crypto");
++
++function sha256File(path) {
++  const data = fs.readFileSync(path);
++  return crypto.createHash("sha256").update(data).digest("hex");
++}
++
++function collectSourceHashes(root = ".") {
++  const out = {};
++  function walk(dir) {
++    for (const f of fs.readdirSync(dir)) {
++      const p = dir + "/" + f;
++      if (p.includes(".git") || p.includes(".nrb")) continue;
++      const stat = fs.statSync(p);
++      if (stat.isDirectory()) walk(p);
++      else out[p] = sha256File(p);
++    }
++  }
++  walk(root);
++  return out;
++}
++
++function verifyReproducibility() {
++  if (!fs.existsSync(".nrb/freeze.json")) {
++    return { ok:false, reason:"No freeze snapshot" };
++  }
++  const freeze = JSON.parse(fs.readFileSync(".nrb/freeze.json"));
++  const current = collectSourceHashes(".");
++
++  for (const k of Object.keys(freeze.source_hashes || {})) {
++    if (current[k] !== freeze.source_hashes[k]) {
++      return { ok:false, reason:`Mismatch ${k}` };
++    }
++  }
++  return { ok:true };
++}
++
++module.exports = { verifyReproducibility };
++
+diff --git a/nrb-devops/bin/nrb-repro b/nrb-devops/bin/nrb-repro
+new file mode 100755
+--- /dev/null
++++ b/nrb-devops/bin/nrb-repro
+@@
++#!/usr/bin/env node
++const { verifyReproducibility } = require("../audit/repro_engine");
++
++const res = verifyReproducibility();
++if (!res.ok) {
++  console.error("[NRB][FAIL] Reproducibility:", res.reason);
++  process.exit(1);
++}
++console.log("[NRB][OK] Build reproducible");
++
+diff --git a/nrb-devops/bin/nrb-freeze b/nrb-devops/bin/nrb-freeze
+index 0000000..1111111 100755
+--- a/nrb-devops/bin/nrb-freeze
++++ b/nrb-devops/bin/nrb-freeze
+@@
+ const fs = require("fs");
++const crypto = require("crypto");
++
++function sha256File(path) {
++  const data = fs.readFileSync(path);
++  return crypto.createHash("sha256").update(data).digest("hex");
++}
++
++function collectSourceHashes(root = ".") {
++  const out = {};
++  function walk(dir) {
++    for (const f of fs.readdirSync(dir)) {
++      const p = dir + "/" + f;
++      if (p.includes(".git") || p.includes(".nrb")) continue;
++      const stat = fs.statSync(p);
++      if (stat.isDirectory()) walk(p);
++      else out[p] = sha256File(p);
++    }
++  }
++  walk(root);
++  return out;
++}
+@@
+ freeze.source_hashes = collectSourceHashes(".");
+ fs.writeFileSync(".nrb/freeze.json", JSON.stringify(freeze, null, 2));
+ console.log("[NRB] source hashes anchored");
+ 
+diff --git a/nrb-devops/bin/nrb-guard b/nrb-devops/bin/nrb-guard
+index 0000000..2222222 100755
+--- a/nrb-devops/bin/nrb-guard
++++ b/nrb-devops/bin/nrb-guard
+@@
++try {
++  require("child_process").execSync("nrb-repro", { stdio:"inherit" });
++} catch {
++  console.error("[NRB] SYSTEM NOT REPRODUCIBLE");
++  process.exit(1);
++}
