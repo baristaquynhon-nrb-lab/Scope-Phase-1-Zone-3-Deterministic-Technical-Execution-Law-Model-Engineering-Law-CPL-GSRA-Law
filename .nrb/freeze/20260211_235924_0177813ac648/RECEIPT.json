@@ -1,0 +1,19 @@
+{
+  "type": "nrb_receipt",
+  "version": "0.2",
+  "tag": "NRB_FREEZE",
+  "timestamp_utc": "2026-02-11T23:59:24Z",
+  "repo_root": "/data/data/com.termux/files/home/Scope-Phase-1-Zone-3-Deterministic-Technical-Execution-Law-Model-Engineering-Law-CPL-GSRA-Law",
+  "git": {
+    "branch": "feat/tiered-audit-v1",
+    "head_sha": "0177813ac6488d81005f4032cbac026a625b35e3",
+    "head_short": "0177813ac648",
+    "origin": "git@github.com:baristaquynhon-nrb-lab/Scope-Phase-1-Zone-3-Deterministic-Technical-Execution-Law-Model-Engineering-Law-CPL-GSRA-Law.git",
+    "dirty": true,
+    "status_porcelain": "?? .nrb/freeze/20260211_235924_0177813ac648/"
+  },
+  "seal": {
+    "manifest_path": "NRB_SEAL_MANIFEST.sha256",
+    "manifest_sha256": "3a0d8d3a77d3c44bdb03841ea61f9c1a5f01b276dc0d2b0496019a5e05478b20"
+  }
+}
