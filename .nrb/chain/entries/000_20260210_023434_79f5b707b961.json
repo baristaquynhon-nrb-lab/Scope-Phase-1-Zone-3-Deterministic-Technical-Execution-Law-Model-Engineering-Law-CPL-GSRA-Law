@@ -1,0 +1,9 @@
+{
+  "index": 0,
+  "freeze_dir": "20260210_023434_79f5b707b961",
+  "timestamp_utc": "2026-02-10T02:34:34Z",
+  "bundle_sha256": null,
+  "manifest_sha256": "7dab7cb14273f06e05df8e8093742f0d1069f84d981d12f3f0874e6bec8a678a",
+  "prev_hash": "GENESIS",
+  "hash": "b8869c2e3fc9971263ebc7a079a56c694aba9435d01245a52e3e31b7a1ef42fc"
+}
