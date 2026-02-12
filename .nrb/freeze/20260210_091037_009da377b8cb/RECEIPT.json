@@ -10,10 +10,7 @@
     "head_short": "009da377b8cb",
     "origin": "git@github.com:baristaquynhon-nrb-lab/Scope-Phase-1-Zone-3-Deterministic-Technical-Execution-Law-Model-Engineering-Law-CPL-GSRA-Law.git",
     "dirty": true,
-    "status_porcelain": " M NRB_SEAL_MANIFEST.sha256
- M NRB_SEAL_MANIFEST.sha256.sig
-?? .nrb/freeze/20260210_091037_009da377b8cb/
-?? PATCH_M23.diff"
+    "status_porcelain": " M NRB_SEAL_MANIFEST.sha256 M NRB_SEAL_MANIFEST.sha256.sig?? .nrb/freeze/20260210_091037_009da377b8cb/?? PATCH_M23.diff"
   },
   "seal": {
     "manifest_path": "NRB_SEAL_MANIFEST.sha256",

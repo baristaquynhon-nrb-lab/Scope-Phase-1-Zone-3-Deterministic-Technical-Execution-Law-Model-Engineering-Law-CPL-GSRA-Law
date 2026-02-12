@@ -1,0 +1,36 @@
+{
+  "type": "nrb_receipt",
+  "version": "0.2",
+  "tag": "NRB_FREEZE",
+  "timestamp_utc": "2026-02-12T04:03:12Z",
+  "repo_root": "/data/data/com.termux/files/home/Scope-Phase-1-Zone-3-Deterministic-Technical-Execution-Law-Model-Engineering-Law-CPL-GSRA-Law",
+  "git": {
+    "branch": "feat/tiered-audit-v1",
+    "head_sha": "b36ef23eb1d45f36f86305bf39511df7ca2043d7",
+    "head_short": "b36ef23eb1d4",
+    "origin": "git@github.com:baristaquynhon-nrb-lab/Scope-Phase-1-Zone-3-Deterministic-Technical-Execution-Law-Model-Engineering-Law-CPL-GSRA-Law.git",
+    "dirty": true,
+    "status_porcelain": " M .nrb/freeze/20260210_023434_79f5b707b961/RECEIPT.json
+ M .nrb/freeze/20260210_025259_c89946452b7a/RECEIPT.json
+ M .nrb/freeze/20260210_045835_37964bc5de42/RECEIPT.json
+ M .nrb/freeze/20260210_053322_e52c4ac340a2/RECEIPT.json
+ M .nrb/freeze/20260210_082442_b9c1db4c0614/RECEIPT.json
+ M .nrb/freeze/20260210_085743_8458c0b1c30c/RECEIPT.json
+ M .nrb/freeze/20260210_091037_009da377b8cb/RECEIPT.json
+ M .nrb/freeze/20260211_152739_009da377b8cb/RECEIPT.json
+ M .nrb/freeze/20260211_164104_03ca762670f5/RECEIPT.json
+ M .nrb/freeze/20260211_164530_0a353aca7c7b/RECEIPT.json
+ M .nrb/freeze/20260211_234402_72226909124d/RECEIPT.json
+ M .nrb/freeze/20260211_235924_0177813ac648/RECEIPT.json
+ M NRB_SEAL_MANIFEST.sha256
+ M NRB_SEAL_MANIFEST.sha256.sig
+?? .nrb/freeze/20260212_040311_b36ef23eb1d4/
+?? =
+?? nrb-devops/forensic/
+?? tools/"
+  },
+  "seal": {
+    "manifest_path": "NRB_SEAL_MANIFEST.sha256",
+    "manifest_sha256": "140198bcdbf57918f32dad84c7ee4cba7ac2082bc02a1d09f37254e8b681bed0"
+  }
+}
